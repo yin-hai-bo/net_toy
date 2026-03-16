@@ -1,0 +1,7 @@
+LICENSE text eol=lf
+.gitattributes text eol=lf
+.gitignore text eol=lf
+*.h text eol=lf
+*.cpp text eol=lf
+*.md text eol=lf
+Makefile text eol=lf
