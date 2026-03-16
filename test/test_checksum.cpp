@@ -1,11 +1,9 @@
 #include <gtest/gtest.h>
+#include <cstring>
 #include "checksum.h"
+#include "test_platform.h"
 
 using Checksum = yhb::Checksum;
-
-#ifdef __GNUC__
-#include <arpa/inet.h>
-#endif
 
 size_t const IP_HEAD_LEN = 20;
 size_t const UDP_HEAD_LEN = 8;

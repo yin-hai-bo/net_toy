@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "route_table.h"
-#include <arpa/inet.h>
+#include "test_platform.h"
 
 namespace yhb {
 

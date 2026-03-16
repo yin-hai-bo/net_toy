@@ -34,3 +34,11 @@
 /bin/
 
 .vscode/
+
+# CMake
+/build/
+/CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+compile_commands.json
