@@ -1,11 +1,8 @@
 #include <gtest/gtest.h>
-#include <memory>
 #include "tb_rate_limiter.h"
 
 using TBRateLimiter = yhb::TBRateLimiter;
 using Action = yhb::TBRateLimiter::Action;
-
-typedef std::unique_ptr<TBRateLimiter> limiter_ptr;
 
 TEST(TBRateLimiter, Generic) {
     const TBRateLimiter::Params params {
@@ -51,4 +48,42 @@ TEST(TBRateLimiter, Generic) {
     ASSERT_EQ(Action::ALLOW, trl.Execute(5700, now));
     ASSERT_EQ(5000, trl.GetCBucketTokens());                // C bucket remains unchanged (should allocate from E bucket)
     ASSERT_EQ(300, trl.GetEBucketTokens());                 // There are 300 tokens remain in the E bucket.
+}
+
+TEST(TBRateLimiter, LowRateAccumulatesTokens) {
+    const TBRateLimiter::Params params {
+        500,    // CIR
+        4,      // CBS
+        250,    // EIR
+        4,      // EBS
+    };
+    TBRateLimiter trl(params, 0);
+
+    ASSERT_EQ(4, trl.GetCBucketTokens());
+    ASSERT_EQ(0, trl.GetEBucketTokens());
+
+    // Consume all initial tokens from the C bucket.
+    ASSERT_EQ(Action::ALLOW, trl.Execute(4, 0));
+    ASSERT_EQ(0, trl.GetCBucketTokens());
+    ASSERT_EQ(0, trl.GetEBucketTokens());
+
+    // 500 bytes/s means 1 token every 2 ms, so 1 ms is still not enough.
+    ASSERT_EQ(Action::DENY, trl.Execute(1, 1));
+    ASSERT_EQ(0, trl.GetCBucketTokens());
+    ASSERT_EQ(0, trl.GetEBucketTokens());
+
+    // After 2 ms in total, the C bucket has accumulated exactly 1 token.
+    ASSERT_EQ(Action::ALLOW, trl.Execute(1, 2));
+    ASSERT_EQ(0, trl.GetCBucketTokens());
+    ASSERT_EQ(0, trl.GetEBucketTokens());
+
+    // Another 8 ms refills the C bucket back to its 4-token capacity.
+    ASSERT_EQ(Action::ALLOW, trl.Execute(4, 10));
+    ASSERT_EQ(0, trl.GetCBucketTokens());
+    ASSERT_EQ(0, trl.GetEBucketTokens());
+
+    // After 4 ms more, the C bucket has accumulated 2 tokens, and this request consumes 1 of them.
+    ASSERT_EQ(Action::ALLOW, trl.Execute(1, 14));
+    ASSERT_EQ(1, trl.GetCBucketTokens());
+    ASSERT_EQ(0, trl.GetEBucketTokens());
 }

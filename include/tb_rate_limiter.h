@@ -88,9 +88,10 @@ private:
         bool Acquire(size_t count);
         uint64_t GetTokens() const { return this->tokens; }
     private:
-        uint64_t const size;      // Capacity of the bucket.
-        uint64_t const info_rate; // Speed of the pass though, token count per milliseconds.
-        uint64_t tokens;          // Current token count.
+        uint64_t const size;               // Capacity of the bucket.
+        uint64_t const info_rate;          // Speed of token generation, in bytes/s.
+        uint64_t tokens;                   // Current token count.
+        uint64_t generated_remainder;      // Remainder of generated tokens before division by 1000.
     };
 
     uint64_t last_time;
