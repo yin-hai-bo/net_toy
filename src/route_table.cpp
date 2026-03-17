@@ -24,10 +24,10 @@ RouteTable::RouteTable() {
  * @brief Parse a given CIDR string.
  *
  * @param str The CIDR string, should be "xx.xxx.x.xx/n".
- * @return Return the CIDR. If the str parameter is not valid, the prefix field of the result is 0.
+ * @param result [out] return result CIDR.
+ * @return true when successful, otherwise if str parameter is not valid.
  */
-static CIDR parse_cidr_str(const char * str) {
-    CIDR result;
+static bool parse_cidr_str(const char * str, CIDR & result) {
     const char * p = str;
     for (;; ++p) {
         char const ch = *p;
@@ -37,40 +37,34 @@ static CIDR parse_cidr_str(const char * str) {
             // No '/' present, it's a single IP address
             if (UNLIKELY(1 != inet_pton(AF_INET, str, &result.prefix))) {
                 // It's a invalid CIDR object.
-                result.prefix = result.network_bits = 0;
-            } else {
-                result.network_bits = 32;
+                return false;
             }
-            return result;
+            result.network_bits = 32;
+            return true;
         }
     }
 
     // Parse the network bits followed by '/'.
-    do {
-        char * end;
-        auto const bits = strtol(p + 1, &end, 10);
-        if (UNLIKELY(*end != '\0' || end == p + 1 || bits < 0 || bits > 32)) {
-            break;
-        }
+    char * end;
+    auto const bits = strtol(p + 1, &end, 10);
+    if (UNLIKELY(*end != '\0' || end == p + 1 || bits < 0 || bits > 32)) {
+        return false;
+    }
 
-        char buf[128];
-        auto const len = std::min<size_t>(sizeof(buf) - 1, p - str);
-        memcpy(buf, str, len);
-        buf[len] = '\0';
-        if (UNLIKELY(1 != inet_pton(AF_INET, buf, &result.prefix))) {
-            break;
-        }
-        result.network_bits = bits;
-        return result;
-    } while (false);
-
-    result.prefix = result.network_bits = 0;
-    return result;
+    char buf[128];
+    auto const len = std::min<size_t>(sizeof(buf) - 1, p - str);
+    memcpy(buf, str, len);
+    buf[len] = '\0';
+    if (UNLIKELY(1 != inet_pton(AF_INET, buf, &result.prefix))) {
+        return false;
+    }
+    result.network_bits = bits;
+    return true;
 }
 
 bool RouteTable::Insert(const char cidr_str[]) {
-    const CIDR cidr = parse_cidr_str(cidr_str);
-    if (LIKELY(cidr.prefix != 0 || cidr.network_bits != 0)) {
+    CIDR cidr;
+    if (LIKELY(parse_cidr_str(cidr_str, cidr))) {
         return this->Insert(cidr.prefix, cidr.network_bits);
     } else {
         return false;

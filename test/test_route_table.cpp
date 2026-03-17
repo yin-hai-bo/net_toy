@@ -54,6 +54,12 @@ TEST(CIDR, Insert) {
     ASSERT_TRUE(tab.containers.empty());
     ASSERT_FALSE(tab.Insert("abced/24"));
     ASSERT_TRUE(tab.containers.empty());
+    ASSERT_FALSE(tab.Insert("0.0.0.0/"));
+    ASSERT_TRUE(tab.containers.empty());
+    ASSERT_FALSE(tab.Insert("/24"));
+    ASSERT_TRUE(tab.containers.empty());
+    ASSERT_FALSE(tab.Insert("0.0.0.0/x"));
+    ASSERT_TRUE(tab.containers.empty());
 
     ASSERT_FALSE(tab.Insert(0x88888888, 33));
 
@@ -143,6 +149,15 @@ TEST(CIDR, Insert) {
     ASSERT_TRUE(tab.Insert("192.168.0.1/16"));
     ASSERT_EQ(1, tab.containers.size());
     ASSERT_EQ((IpRange{0x00, 0x0ffffffff}), tab.containers[0]);
+
+    tab.Clear();
+    ASSERT_TRUE(tab.containers.empty());
+    ASSERT_TRUE(tab.Insert("0.0.0.0"));
+    ASSERT_TRUE(tab.Insert("0.0.0.0/32"));
+    ASSERT_EQ(1, tab.containers.size());
+    ASSERT_EQ((IpRange{0x00000000, 0x00000000}), tab.containers[0]);
+    ASSERT_TRUE(tab.Find(0x00000000, true));
+    ASSERT_FALSE(tab.Find(0x00000001, true));
 }
 
 TEST(CIDR, Single) {
