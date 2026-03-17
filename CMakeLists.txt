@@ -5,6 +5,7 @@ project(net_toy VERSION 0.1.0 LANGUAGES CXX)
 include(CTest)
 
 add_library(hbutils STATIC
+    src/cidr_set.cpp
     src/checksum.cpp
     src/route_table.cpp
     src/tb_rate_limiter.cpp
@@ -32,6 +33,7 @@ if (BUILD_TESTING)
 
     add_executable(net_toy_test
         test/test_checksum.cpp
+        test/test_cidr_set.cpp
         test/test_route_table.cpp
         test/test_tb_rate_limiter.cpp
     )

@@ -24,6 +24,9 @@
     <ClCompile Include="..\..\src\route_table.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\cidr_set.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\yhb_net_toy\checksum.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yhb_net_toy\tb_rate_limiter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\yhb_net_toy\cidr_set.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

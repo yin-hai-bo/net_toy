@@ -9,21 +9,23 @@ lib_target := $(bin_dir)/libhbutils.a
 test_exe := $(bin_dir)/test
 
 impl_src := \
-	route_table.cpp \
 	checksum.cpp \
+	cidr_set.cpp \
+	route_table.cpp \
 	tb_rate_limiter.cpp
 impl_src := $(addprefix $(src_dir)/, $(impl_src))
 impl_obj := $(impl_src:.cpp=.o)
 
 test_src := \
-	test_route_table.cpp \
 	test_checksum.cpp \
+	test_cidr_set.cpp \
+	test_route_table.cpp \
 	test_tb_rate_limiter.cpp
 test_src := $(addprefix $(test_dir)/, $(test_src))
 test_obj := $(test_src:.cpp=.o)
 
 CXXFLAGS := \
-	--std=c++11 -Werror -Wfatal-errors \
+	--std=c++17 -Werror -Wfatal-errors \
 	-O1 \
 	-I $(include_dir)
 
