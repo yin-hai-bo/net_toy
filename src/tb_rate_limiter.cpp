@@ -1,6 +1,6 @@
-#include "tb_rate_limiter.h"
+#include "yhb_net_toy/tb_rate_limiter.h"
 
-namespace yhb {
+namespace yhb_net_toy {
 
 TBRateLimiter::TBRateLimiter(const Params & params, uint64_t now)
     : last_time(now)
@@ -128,4 +128,4 @@ bool TBRateLimiter::Bucket::Acquire(size_t count) {
     return false;
 }
 
-} // End of namespace 'yhb'
+} // End of namespace 'yhb_net_toy'

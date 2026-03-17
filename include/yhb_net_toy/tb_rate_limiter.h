@@ -22,13 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef HB_UTILS_TB_RATE_LIMITER
-#define HB_UTILS_TB_RATE_LIMITER
+#ifndef YHB_NET_TOY_TB_RATE_LIMITER
+#define YHB_NET_TOY_TB_RATE_LIMITER
 
 #include <cstddef>
 #include <cstdint>
 
-namespace yhb {
+namespace yhb_net_toy {
 
 class TBRateLimiter {
 public:

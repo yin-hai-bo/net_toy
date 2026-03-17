@@ -22,13 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef YHB_CHECKSUM_H
-#define YHB_CHECKSUM_H
+#ifndef YHB_NET_TOY_CHECKSUM_H
+#define YHB_NET_TOY_CHECKSUM_H
 
 #include <cstdint>
 #include <cstddef>
 
-namespace yhb {
+namespace yhb_net_toy {
 
 struct Checksum {
 

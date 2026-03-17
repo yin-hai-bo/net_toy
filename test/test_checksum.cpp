@@ -1,9 +1,10 @@
+#include "yhb_net_toy/checksum.h"
+#include "yhb_net_toy/platform.h"
 #include <gtest/gtest.h>
 #include <cstring>
-#include "checksum.h"
-#include "test_platform.h"
 
-using Checksum = yhb::Checksum;
+
+using Checksum = yhb_net_toy::Checksum;
 
 size_t const IP_HEAD_LEN = 20;
 size_t const UDP_HEAD_LEN = 8;

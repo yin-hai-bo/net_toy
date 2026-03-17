@@ -1,13 +1,13 @@
-﻿#ifndef YHB_CIDR_TAB_H
-#define YHB_CIDR_TAB_H
+﻿#ifndef YHB_NET_TOY_CIDR_TAB_H
+#define YHB_NET_TOY_CIDR_TAB_H
 
-#include "yhb_common.h"
+#include "yhb_net_toy/platform.h"
 #include <cstdint>
 #include <cstddef>
 #include <vector>
 #include <functional>
 
-namespace yhb {
+namespace yhb_net_toy {
 
 class RouteTable {
 public:
@@ -136,6 +136,6 @@ private:
     FRIEND_GTEST(CIDR, Single);
 };
 
-} // End of namespace 'yhb'
+} // End of namespace 'yhb_net_toy'
 
 #endif

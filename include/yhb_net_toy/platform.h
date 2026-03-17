@@ -1,5 +1,5 @@
-#ifndef YHB_COMMON_H
-#define YHB_COMMON_H
+#ifndef YHB_NET_TOY_PLATFORM_H
+#define YHB_NET_TOY_PLATFORM_H
 
 #if !defined(LIKELY) && !defined(UNLIKELY)
 #   if defined __GNUC__
@@ -17,6 +17,13 @@
 #else
 #   define STATIC_IF_NO_GTEST static
 #   define FRIEND_GTEST(test_case_name, test_name)
+#endif
+
+#ifdef _WIN32
+#include <WinSock2.h>
+#include <ws2tcpip.h>
+#else
+#include <netinet/in.h>
 #endif
 
 #endif

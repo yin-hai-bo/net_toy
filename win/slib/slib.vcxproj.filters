@@ -26,16 +26,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\checksum.h">
+    <ClInclude Include="..\..\include\yhb_net_toy\checksum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\tb_rate_limiter.h">
+    <ClInclude Include="..\..\include\yhb_net_toy\platform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\route_table.h">
+    <ClInclude Include="..\..\include\yhb_net_toy\route_table.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\yhb_common.h">
+    <ClInclude Include="..\..\include\yhb_net_toy\tb_rate_limiter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

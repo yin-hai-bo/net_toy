@@ -1,18 +1,11 @@
-﻿#include "route_table.h"
-#include "yhb_common.h"
+﻿#include "yhb_net_toy/route_table.h"
+
 #include <vector>
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
 
-#ifdef _WIN32
-#include <WinSock2.h>
-#include <ws2tcpip.h>
-#else
-#include <arpa/inet.h>
-#endif
-
-namespace yhb {
+namespace yhb_net_toy {
 
 using CIDR = RouteTable::CIDR;
 
@@ -189,4 +182,4 @@ void RouteTable::IpRange::ToCIDR(std::function<void (CIDR)> each_cidr_callback) 
     convert_ip_range_to_cidr(this->first, this->last, each_cidr_callback);
 }
 
-} // End of namespace 'yhb'
+} // End of namespace 'yhb_net_toy'

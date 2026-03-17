@@ -1,8 +1,8 @@
+#include "yhb_net_toy/tb_rate_limiter.h"
 #include <gtest/gtest.h>
-#include "tb_rate_limiter.h"
 
-using TBRateLimiter = yhb::TBRateLimiter;
-using Action = yhb::TBRateLimiter::Action;
+using TBRateLimiter = yhb_net_toy::TBRateLimiter;
+using Action = yhb_net_toy::TBRateLimiter::Action;
 
 TEST(TBRateLimiter, Generic) {
     const TBRateLimiter::Params params {

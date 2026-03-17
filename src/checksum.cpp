@@ -6,7 +6,7 @@
  * Modified by YinHaiBo 2023.11
  */
 
-#include "checksum.h"
+#include "yhb_net_toy/checksum.h"
 
 /** Split an u32_t in two u16_ts and add them up */
 #define FOLD_U32T(u) \
@@ -16,7 +16,7 @@
 #define SWAP_BYTES_IN_WORD(w) \
     (((w) & 0xff) << 8) | (((w) & 0xff00) >> 8)
 
-uint16_t yhb::Checksum::Calculate(const void * dataptr, size_t len, uint16_t additional) {
+uint16_t yhb_net_toy::Checksum::Calculate(const void * dataptr, size_t len, uint16_t additional) {
     const uint8_t * pb = (const uint8_t *)dataptr;
     const int odd = ((intptr_t)pb & 1);
 

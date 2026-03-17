@@ -36,6 +36,11 @@ if (BUILD_TESTING)
         test/test_tb_rate_limiter.cpp
     )
 
+    target_include_directories(net_toy_test
+        PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
+    )
+
     target_compile_features(net_toy_test PRIVATE cxx_std_11)
     target_compile_definitions(net_toy_test PRIVATE GTEST)
 

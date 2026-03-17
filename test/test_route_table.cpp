@@ -1,8 +1,7 @@
+#include "yhb_net_toy/route_table.h"
 #include <gtest/gtest.h>
-#include "route_table.h"
-#include "test_platform.h"
 
-namespace yhb {
+namespace yhb_net_toy {
 
 using IpRange = RouteTable::IpRange;
 using CIDR = RouteTable::CIDR;
