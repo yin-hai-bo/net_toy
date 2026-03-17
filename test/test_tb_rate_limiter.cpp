@@ -87,3 +87,42 @@ TEST(TBRateLimiter, LowRateAccumulatesTokens) {
     ASSERT_EQ(1, trl.GetCBucketTokens());
     ASSERT_EQ(0, trl.GetEBucketTokens());
 }
+
+TEST(TBRateLimiter, ZeroRateNeverRefillsBuckets) {
+    const TBRateLimiter::Params params {
+        0,      // CIR
+        4,      // CBS
+        0,      // EIR
+        4,      // EBS
+    };
+    TBRateLimiter trl(params, 0);
+
+    ASSERT_EQ(4, trl.GetCBucketTokens());
+    ASSERT_EQ(0, trl.GetEBucketTokens());
+
+    ASSERT_EQ(Action::ALLOW, trl.Execute(4, 0));
+    ASSERT_EQ(0, trl.GetCBucketTokens());
+    ASSERT_EQ(0, trl.GetEBucketTokens());
+
+    ASSERT_EQ(Action::DENY, trl.Execute(1, 10000));
+    ASSERT_EQ(0, trl.GetCBucketTokens());
+    ASSERT_EQ(0, trl.GetEBucketTokens());
+}
+
+TEST(TBRateLimiter, ZeroCapacityNeverStoresTokens) {
+    const TBRateLimiter::Params params {
+        1000,   // CIR
+        0,      // CBS
+        1000,   // EIR
+        0,      // EBS
+    };
+    TBRateLimiter trl(params, 0);
+
+    ASSERT_EQ(0, trl.GetCBucketTokens());
+    ASSERT_EQ(0, trl.GetEBucketTokens());
+
+    ASSERT_EQ(Action::DENY, trl.Execute(1, 0));
+    ASSERT_EQ(Action::DENY, trl.Execute(1, 10000));
+    ASSERT_EQ(0, trl.GetCBucketTokens());
+    ASSERT_EQ(0, trl.GetEBucketTokens());
+}
