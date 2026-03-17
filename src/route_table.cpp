@@ -75,10 +75,10 @@ bool RouteTable::Insert(uint32_t prefix_net_order, unsigned network_bits) {
     if (network_bits > 32) {
         return false;
     }
-    uint32_t const prfix_host_order = ntohl(prefix_net_order);
-    uint32_t const mask = uint32_t(-1) << (32 - network_bits);
+    uint32_t const prefix_host_order = ntohl(prefix_net_order);
+    uint32_t const mask = (network_bits == 0) ? 0 : (uint32_t(-1) << (32 - network_bits));
     IpRange range;
-    range.first = prfix_host_order & mask;
+    range.first = prefix_host_order & mask;
     range.last = range.first | (~mask);
     return Insert(range);
 }

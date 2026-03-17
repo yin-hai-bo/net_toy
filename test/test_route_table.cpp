@@ -158,6 +158,15 @@ TEST(CIDR, Insert) {
     ASSERT_EQ((IpRange{0x00000000, 0x00000000}), tab.containers[0]);
     ASSERT_TRUE(tab.Find(0x00000000, true));
     ASSERT_FALSE(tab.Find(0x00000001, true));
+
+    tab.Clear();
+    ASSERT_TRUE(tab.containers.empty());
+    ASSERT_TRUE(tab.Insert("0.0.0.0/0"));
+    ASSERT_EQ(1, tab.containers.size());
+    ASSERT_EQ((IpRange{0x00000000, 0xffffffff}), tab.containers[0]);
+    ASSERT_TRUE(tab.Find(0x00000000, true));
+    ASSERT_TRUE(tab.Find(0x7f000001, true));
+    ASSERT_TRUE(tab.Find(0xffffffff, true));
 }
 
 TEST(CIDR, Single) {
