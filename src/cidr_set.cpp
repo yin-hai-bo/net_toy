@@ -172,7 +172,6 @@ bool CIDRSet::check(const void * prefix, uint8_t prefix_len, uint8_t max_prefix_
     return false;
 }
 
-#ifndef NDEBUG
 static void cidr_set_validate(CIDRSet::Node const * node, bool is_root) {
     assert(node);
 
@@ -207,7 +206,5 @@ static void cidr_set_validate(CIDRSet::Node const * node, bool is_root) {
 void CIDRSet::Validate() const {
     cidr_set_validate(&root, true);
 }
-
-#endif
 
 } // End of namespace 'yhb_net_toy'

@@ -10,6 +10,82 @@ static in6_addr make_in6_addr(const char * ip) {
     return addr;
 }
 
+static in_addr make_in_addr(const char * ip) {
+    in_addr addr;
+    inet_pton(AF_INET, ip, &addr);
+    return addr;
+}
+
+namespace {
+
+class MockIP {
+public:
+    MockIP() : family_(AF_UNSPEC) {}
+
+    explicit MockIP(const in_addr & addr) : family_(AF_INET) {
+        addr_.v4 = addr;
+    }
+
+    explicit MockIP(const in6_addr & addr) : family_(AF_INET6) {
+        addr_.v6 = addr;
+    }
+
+    bool IsV4() const { return family_ == AF_INET; }
+    bool IsV6() const { return family_ == AF_INET6; }
+    in_addr GetInAddr() const { return addr_.v4; }
+    in6_addr GetIn6Addr() const { return addr_.v6; }
+
+private:
+    int family_;
+    union {
+        in_addr v4;
+        in6_addr v6;
+    } addr_;
+};
+
+} // namespace
+
+TEST(CIDRTest, TemplateConstructor) {
+    {
+        const auto addr = make_in_addr("192.168.1.42");
+        const CIDR cidr(MockIP(addr), 24);
+        ASSERT_TRUE(cidr.IsV4());
+        ASSERT_EQ(24, cidr.GetPrefixLen());
+        ASSERT_EQ(addr.s_addr, cidr.GetV4().s_addr);
+    }
+
+    {
+        const auto addr = make_in_addr("10.0.0.1");
+        const CIDR cidr(MockIP(addr), 40);
+        ASSERT_TRUE(cidr.IsV4());
+        ASSERT_EQ(32, cidr.GetPrefixLen());
+        ASSERT_EQ(addr.s_addr, cidr.GetV4().s_addr);
+    }
+
+    {
+        const auto addr = make_in6_addr("2001:db8::1");
+        const CIDR cidr(MockIP(addr), 64);
+        ASSERT_TRUE(cidr.IsV6());
+        ASSERT_EQ(64, cidr.GetPrefixLen());
+        ASSERT_EQ(0, memcmp(&addr, &cidr.GetV6(), sizeof(addr)));
+    }
+
+    {
+        const auto addr = make_in6_addr("2001:db8::2");
+        const CIDR cidr(MockIP(addr), 200);
+        ASSERT_TRUE(cidr.IsV6());
+        ASSERT_EQ(128, cidr.GetPrefixLen());
+        ASSERT_EQ(0, memcmp(&addr, &cidr.GetV6(), sizeof(addr)));
+    }
+
+    {
+        const CIDR cidr(MockIP(), 24);
+        ASSERT_FALSE(cidr.IsValid());
+        ASSERT_EQ(AF_UNSPEC, cidr.GetFamily());
+        ASSERT_EQ(0, cidr.GetPrefixLen());
+    }
+}
+
 TEST(CIDRSetTest, 1) {
     CIDRSet set;
     EXPECT_TRUE(set.IsEmpty());
@@ -304,27 +380,30 @@ TEST(CIDRSetTest, Export) {
 
 TEST(CIDRSetTest, Export2) {
 
-    // /0
-    CIDRSet set;
-    ASSERT_TRUE(set.Insert(make_in6_addr("FFFF::"), 0));
-    set.Validate();
-
     std::vector<CIDR> v;
-    set.Export<in6_addr>(v);
 
-    ASSERT_EQ(1u, v.size());
-    ASSERT_EQ(v[0], CIDR(make_in6_addr("::"), 0));
+    {
+        // /0
+        CIDRSet set;
+        ASSERT_TRUE(set.Insert(make_in6_addr("FFFF::"), 0));
+        set.Validate();
 
-    // /128
-    set.Clear();
-    ASSERT_TRUE(set.Insert(make_in6_addr("2001:db8::1"), 128));
-    set.Validate();
+        set.Export<in6_addr>(v);
 
-    v.clear();
-    set.Export<in6_addr>(v);
+        ASSERT_EQ(1u, v.size());
+        ASSERT_EQ(v[0], CIDR(make_in6_addr("::"), 0));
 
-    ASSERT_EQ(1u, v.size());
-    ASSERT_EQ(v[0], CIDR(make_in6_addr("2001:db8::1"), 128));
+        // /128
+        set.Clear();
+        ASSERT_TRUE(set.Insert(make_in6_addr("2001:db8::1"), 128));
+        set.Validate();
+
+        v.clear();
+        set.Export<in6_addr>(v);
+
+        ASSERT_EQ(1u, v.size());
+        ASSERT_EQ(v[0], CIDR(make_in6_addr("2001:db8::1"), 128));
+    }
 
     {
         CIDRSet set;

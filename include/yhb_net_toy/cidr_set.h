@@ -53,13 +53,15 @@ public:
         if (ip.IsV4()) {
             this->af = AF_INET;
             this->addr.v4 = ip.GetInAddr();
+            this->prefix_len = max_prefix_len(this->addr.v4, prefix_len);
         } else if (ip.IsV6()) {
             this->af = AF_INET6;
             this->addr.v6 = ip.GetIn6Addr();
+            this->prefix_len = max_prefix_len(this->addr.v6, prefix_len);
         } else {
             this->af = AF_UNSPEC;
+            this->prefix_len = 0;
         }
-        this->prefix_len = prefix_len;
     }
 
     /**
@@ -264,9 +266,7 @@ public:
         return !root.leaf && !root.child[0] && !root.child[1];
     }
 
-    #ifndef NDEBUG
     void Validate() const;
-    #endif
 
     /**
      * @brief 导出 CIDR_EX 列表。
